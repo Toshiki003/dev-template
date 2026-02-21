@@ -29,3 +29,5 @@ bin/
 
 # PHP / Composer
 /vendor/
+.claude/settings.local.json
+.env.local

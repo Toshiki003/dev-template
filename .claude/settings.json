@@ -1,0 +1,21 @@
+{
+  "language": "japanese",
+  "permissions": {
+    "allow": [
+      "Read(claude-ext/**)",
+      "Read(.claude/**)",
+      "Bash(npm run:*)",
+      "Bash(yarn:*)",
+      "Bash(pnpm:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf /)**"
+    ]
+  },
+  "attribution": {
+    "commit": "Co-Authored-By: Claude <noreply@anthropic.com>"
+  }
+}
