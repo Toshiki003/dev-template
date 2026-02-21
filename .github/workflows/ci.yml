@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      php: ${{ steps.detect.outputs.php }}
+      go: ${{ steps.detect.outputs.go }}
+      python: ${{ steps.detect.outputs.python }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: detect
+        run: |
+          php=false
+          go=false
+          python=false
+
+          if [ -f composer.json ]; then php=true; fi
+          if [ -f go.mod ]; then go=true; fi
+          if [ -f pyproject.toml ] || [ -f requirements.txt ]; then python=true; fi
+
+          echo "php=$php" >> $GITHUB_OUTPUT
+          echo "go=$go" >> $GITHUB_OUTPUT
+          echo "python=$python" >> $GITHUB_OUTPUT
+
+  php:
+    needs: detect
+    if: needs.detect.outputs.php == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+      - name: Install dependencies
+        run: |
+          if [ -f composer.json ]; then composer install --no-interaction --prefer-dist; fi
+      - name: Lint / Test (best-effort)
+        run: |
+          if [ -f vendor/bin/phpunit ]; then vendor/bin/phpunit; else echo "phpunit not found, skip"; fi
+
+  go:
+    needs: detect
+    if: needs.detect.outputs.go == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+      - name: Test
+        run: |
+          go test ./... -count=1
+
+  python:
+    needs: detect
+    if: needs.detect.outputs.python == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install (best-effort)
+        run: |
+          python -m pip install -U pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          # Avoid forcing packaging layout; run tests if pytest exists
+      - name: Test (best-effort)
+        run: |
+          if command -v pytest >/dev/null 2>&1; then pytest -q; else echo "pytest not installed, skip"; fi

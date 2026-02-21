@@ -1,0 +1,26 @@
+name: PR Summary (Optional)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  pr-summary:
+    runs-on: ubuntu-latest
+    if: ${{ vars.AI_ENABLED == 'true' && secrets.OPENAI_API_KEY != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate summary with Codex Action
+        uses: openai/codex-action@v1
+        with:
+          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: |
+            You are a strict senior reviewer.
+            Summarize the PR changes in Japanese for a GitHub PR description.
+            Include: what changed, why, risk/impact, how to test, and security considerations.
+            Keep it concise.
