@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ vars.AI_ENABLED == 'true' && secrets.OPENAI_API_KEY != '' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Generate summary with Codex Action
         uses: openai/codex-action@v1
         with:
