@@ -30,6 +30,4 @@ branch="feat/${slug}-$(date +%Y%m%d%H%M%S)"
 git checkout -b "$branch"
 
 echo "Now implement your changes, then run:"
-echo "  ./scripts/pr.sh --finish \"${TITLE}\""
-echo ""
-echo "Tip: If you want one-shot (commit+push+PR) after implementation, rerun with --finish."
+echo "  ./scripts/pr-finish.sh \"${TITLE}\""
