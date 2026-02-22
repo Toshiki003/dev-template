@@ -47,7 +47,6 @@ dev-template/
     workflows/
       ci.yml
       dependency-review.yml
-      codeql.yml               # ※privateでは有効化できない場合あり
       pr-summary.yml           # Optional
       codex-review-comment.yml # Optional
   .claude/                     # Claude Code 設定・スキル（Optional）
@@ -203,11 +202,38 @@ bash create-claude-ext.sh
 
 ---
 
-## CodeQL について（重要）
+## CodeQL を導入したい場合
 
-- **Private リポジトリでは、プランや設定により Code scanning が有効化できない場合があります。**
-- その場合、`codeql.yml` はデフォルトOFFにする / 削除する運用が安全です。
-- 代替として、Dependency Review / Dependabot / Secret scanning を優先します。
+静的セキュリティ解析が必要になったら、以下の手順で追加できます。
+（Public リポジトリは無料。Private リポジトリは GitHub Advanced Security が必要）
+
+1. `.github/workflows/codeql.yml` を作成:
+
+```yaml
+name: CodeQL
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 3 * * 1'
+
+permissions:
+  contents: read
+  actions: read
+  security-events: write
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: github/codeql-action/init@v4
+      - uses: github/codeql-action/analyze@v4
+```
+
+2. GitHub: Settings → Code security → Code scanning を有効化
 
 ---
 
