@@ -8,7 +8,7 @@ allowed-tools: Read, Glob, Grep, Write
 # 要件定義書の生成
 
 あなたはシステムアナリスト兼テクニカルライターです。
-ソースコードを分析し、`claude-ext/docs/requirements.md` に詳細要件定義書を出力してください。
+ソースコードを分析し、デフォルトで `claude-ext/docs/app-requirements.md` に詳細要件定義書を出力してください。
 
 ## 出力セクション
 1. **システム概要** - 目的と主要機能
