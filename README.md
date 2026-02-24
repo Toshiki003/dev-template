@@ -143,11 +143,45 @@ GitHub: Settings → Secrets and variables → Actions → Variables
 
 ### 2) PRサマリ生成を使いたい場合（任意）
 
-GitHub: Settings → Secrets and variables → Actions → Secrets
+デフォルトでは **Gemini（gemini-2.5-flash）** を使用します。
 
-- `OPENAI_API_KEY` を追加
+**最小構成（Gemini）**: Secret に `LLM_API_KEY` を設定するだけでOK。
+
+GitHub: Settings → Secrets and variables → Actions → **Secrets**
+
+- `LLM_API_KEY` — Google AI Studio の APIキー
 
 > APIキーは **リポジトリにコミットしません**。Secretsに保存します。
+
+**別のLLMプロバイダーに切り替えたい場合**:
+
+Settings → Secrets and variables → Actions → **Variables** で以下を追加します。
+
+| Variable名 | 説明 | デフォルト値（未設定時） |
+|------------|------|------------------------|
+| `LLM_API_BASE` | APIベースURL | `https://generativelanguage.googleapis.com/v1beta/openai` |
+| `LLM_MODEL` | モデル名 | `gemini-2.5-flash` |
+
+<details>
+<summary>例: OpenAI に切り替える場合</summary>
+
+| 種別 | 名前 | 値 |
+|------|------|-----|
+| Secret | `LLM_API_KEY` | OpenAI APIキー |
+| Variable | `LLM_API_BASE` | `https://api.openai.com/v1` |
+| Variable | `LLM_MODEL` | `gpt-4o-mini` |
+
+</details>
+
+<details>
+<summary>旧バージョン（OPENAI_API_KEY）からの移行</summary>
+
+1. Secret `OPENAI_API_KEY` を削除
+2. Secret `LLM_API_KEY` を追加（OpenAI のキーをそのまま設定可）
+3. Variable `LLM_API_BASE` に `https://api.openai.com/v1` を設定
+4. Variable `LLM_MODEL` に `gpt-4o-mini` を設定
+
+</details>
 
 ### 3) Codexレビュー依頼（ラベル駆動）
 
