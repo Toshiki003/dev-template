@@ -64,7 +64,7 @@ jobs:
                     content: `PR Title: ${process.env.PR_TITLE}\n\nDiff:\n${process.env.PR_DIFF}`
                   }
                 ],
-                max_tokens: 2048,
+                max_tokens: 4096,
               }),
             });
 
