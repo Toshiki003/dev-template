@@ -12,6 +12,8 @@ jobs:
   pr-summary:
     runs-on: ubuntu-latest
     if: ${{ vars.AI_ENABLED == 'true' }}
+    env:
+      LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -26,10 +28,9 @@ jobs:
           echo "DIFF_EOF" >> "$GITHUB_OUTPUT"
 
       - name: Generate summary with LLM API
-        if: ${{ secrets.LLM_API_KEY != '' }}
+        if: ${{ env.LLM_API_KEY != '' }}
         uses: actions/github-script@v7
         env:
-          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
           LLM_API_BASE: ${{ vars.LLM_API_BASE || 'https://generativelanguage.googleapis.com/v1beta/openai' }}
           LLM_MODEL: ${{ vars.LLM_MODEL || 'gemini-2.5-flash' }}
           PR_DIFF: ${{ steps.diff.outputs.diff }}
