@@ -11,6 +11,13 @@
 
 ---
 
+## 0. 作業対象ドキュメントの選択
+
+- アプリ実装を進める場合: `claude-ext/docs/app-requirements.md` / `claude-ext/docs/app-tasklist.md`
+- テンプレート保守を進める場合: `claude-ext/docs/template-requirements.md` / `claude-ext/docs/template-tasklist.md`
+
+---
+
 ## 1. ブランチ作成
 
 ```bash
@@ -101,5 +108,7 @@ gh pr merge --squash
 | シナリオ | 影響 | 代替手段 |
 |---------|------|---------|
 | Claude Code解約 | `/implement-next`、`/fix-review` 使用不可 | 本手順書のスクリプトで手動PR作成 |
-| Codex解約 | PRサマリー・AIレビューなし | CI/CodeQL/dependency-reviewは継続動作。PRテンプレートで手動サマリー |
-| 両方解約 | AI機能すべて停止 | Issueテンプレート、PRテンプレート、CI、CodeQLは完全に動作 |
+| Codex解約 | PRサマリー・AIレビューなし | CI/dependency-reviewは継続動作。PRテンプレートで手動サマリー |
+| 両方解約 | AI機能すべて停止 | Issueテンプレート、PRテンプレート、CI、dependency-reviewは動作 |
+
+> CodeQL は任意導入です。導入済みの場合のみ継続動作します。

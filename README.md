@@ -55,14 +55,17 @@ dev-template/
     skills/
   claude-ext/                  # 要件・タスク管理ドキュメント（Optional）
     docs/
-      requirements.md
-      tasklist.md
+      app-requirements.md
+      app-tasklist.md
+      template-requirements.md
+      template-tasklist.md
+      requirements.md          # 互換ポインタ
+      tasklist.md              # 互換ポインタ
       decision-log.md
       manual-workflow.md
   scripts/
     pr.sh                      # ブランチ作成
     pr-finish.sh               # コミット→Push→PR作成
-  create-claude-ext.sh         # Claude拡張セットアップスクリプト
   .gitignore
   README.md
   SECURITY.md
@@ -143,13 +146,68 @@ GitHub: Settings → Secrets and variables → Actions → Variables
 
 ### 2) PRサマリ生成を使いたい場合（任意）
 
-GitHub: Settings → Secrets and variables → Actions → Secrets
+デフォルトでは **Gemini（gemini-2.5-flash）** を使用します。
 
-- `OPENAI_API_KEY` を追加
+**最小構成（Gemini）**: Secret に `LLM_API_KEY` を設定するだけでOK。
+
+GitHub: Settings → Secrets and variables → Actions → **Secrets**
+
+- `LLM_API_KEY` — Google AI Studio の APIキー
 
 > APIキーは **リポジトリにコミットしません**。Secretsに保存します。
 
-### 3) Codexレビュー依頼（ラベル駆動）
+**別のLLMプロバイダーに切り替えたい場合**:
+
+Settings → Secrets and variables → Actions → **Variables** で以下を追加します。
+
+| Variable名 | 説明 | デフォルト値（未設定時） |
+|------------|------|------------------------|
+| `LLM_API_BASE` | APIベースURL | `https://generativelanguage.googleapis.com/v1beta/openai` |
+| `LLM_MODEL` | モデル名 | `gemini-2.5-flash` |
+
+<details>
+<summary>例: OpenAI に切り替える場合</summary>
+
+| 種別 | 名前 | 値 |
+|------|------|-----|
+| Secret | `LLM_API_KEY` | OpenAI APIキー |
+| Variable | `LLM_API_BASE` | `https://api.openai.com/v1` |
+| Variable | `LLM_MODEL` | `gpt-4o-mini` |
+
+</details>
+
+<details>
+<summary>旧バージョン（OPENAI_API_KEY）からの移行</summary>
+
+1. Secret `OPENAI_API_KEY` を削除
+2. Secret `LLM_API_KEY` を追加（OpenAI のキーをそのまま設定可）
+3. Variable `LLM_API_BASE` に `https://api.openai.com/v1` を設定
+4. Variable `LLM_MODEL` に `gpt-4o-mini` を設定
+
+</details>
+
+### 3) LLM外部送信ポリシー（必読）
+
+PRサマリ機能（`.github/workflows/pr-summary.yml`）は、外部LLM APIに以下を送信します。
+
+- PRタイトル
+- `git diff origin/<base>...HEAD` の先頭10,000 bytes（`*.lock` と `package-lock.json` は除外）
+
+以下を含む可能性があるPRでは、PRサマリ機能を有効化しないでください。
+
+- APIキー、トークン、認証情報
+- 個人情報、顧客データ、契約上の秘匿情報
+- 未公開の脆弱性情報、インシデント情報
+
+運用ルール:
+
+- デフォルトは `AI_ENABLED` 未設定（OFF）
+- 有効化は、リポジトリ管理者が情報分類と利用規約を確認した場合のみ
+- 機密データを扱う期間・プロジェクトは `AI_ENABLED=false` で運用する
+
+詳細は `SECURITY.md` を参照してください。
+
+### 4) Codexレビュー依頼（ラベル駆動）
 
 PRにラベル `ai-review` を付けると、`@codex review` コメントが自動で付きます。
 （Codex GitHub連携が有効な場合、レビューが返ります）
@@ -163,20 +221,19 @@ Claude Code を使ってローカル開発を加速するための設定・ス�
 
 ### セットアップ
 
-既存リポジトリに Claude Code 連携機能を追加するには:
+このテンプレートから新規リポジトリを作成した場合、`.claude/` と `claude-ext/` は初期状態で含まれています。追加セットアップは不要です。
 
-```bash
-bash create-claude-ext.sh
-```
+既存リポジトリへ後から導入する場合は、以下を手動で追加してください。
 
-`--dry-run` オプションで事前に確認できます。詳細は `bash create-claude-ext.sh --help` を参照。
+- `.claude/`
+- `claude-ext/`
 
 ### 構成
 
 | ディレクトリ | 役割 |
 |-------------|------|
 | `.claude/` | Claude Code のプロジェクト設定・ルール・スキル定義 |
-| `claude-ext/docs/` | 要件定義 (`requirements.md`)・タスクリスト (`tasklist.md`)・意思決定ログ等 |
+| `claude-ext/docs/` | アプリ実装用 (`app-*`) とテンプレート保守用 (`template-*`) の要件/タスク・意思決定ログ等 |
 
 ### 利用可能なスキル（スラッシュコマンド）
 
@@ -194,11 +251,13 @@ bash create-claude-ext.sh
 
 基本的な流れ:
 
-1. `requirements.md` に要件を記載
-2. `/analyze` → `/update-tasks` でタスクを自動生成
+1. `app-requirements.md` に要件を記載
+2. `/analyze` → `/update-tasks` で `app-tasklist.md` を更新
 3. `/implement-next` でタスクを実装・PR作成
 4. レビュー後、`/fix-review` で指摘を修正
 5. マージ → 次のタスクへ
+
+テンプレート自体を保守する場合は `template-requirements.md` / `template-tasklist.md` を使用します。
 
 ---
 

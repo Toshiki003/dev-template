@@ -66,11 +66,36 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install (best-effort)
+      - name: Install dependencies
         run: |
           python -m pip install -U pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          # Avoid forcing packaging layout; run tests if pytest exists
-      - name: Test (best-effort)
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+
+          if [ -f pyproject.toml ]; then
+            if ! pip install -e ".[test]"; then
+              echo "Could not install test extras; retrying without extras."
+              if ! pip install -e .; then
+                echo "Project install failed; continuing with explicit test runner install."
+              fi
+            fi
+          fi
+      - name: Test
         run: |
-          if command -v pytest >/dev/null 2>&1; then pytest -q; else echo "pytest not installed, skip"; fi
+          has_pytest_layout=false
+
+          if [ -d tests ] || [ -f pytest.ini ] || [ -f conftest.py ]; then
+            has_pytest_layout=true
+          fi
+
+          if [ -f pyproject.toml ] && grep -Eq '^\[tool\.pytest(\.ini_options)?\]' pyproject.toml; then
+            has_pytest_layout=true
+          fi
+
+          if [ "$has_pytest_layout" = "true" ]; then
+            python -m pip install -U pytest
+            python -m pytest -q
+          else
+            echo "No pytest layout detected. Skipping pytest."
+          fi

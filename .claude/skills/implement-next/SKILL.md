@@ -9,15 +9,21 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 
 以下の手順を**順番に**実行してください。各ステップで問題が発生した場合はユーザーに報告して指示を仰いでください。
 
+## 0. 対象ファイルの決定
+
+1. 既定は `claude-ext/docs/app-tasklist.md` と `claude-ext/docs/app-requirements.md` を使う
+2. もし上記が存在しない場合は `template-tasklist.md` / `template-requirements.md` にフォールバックする
+3. ユーザーが「テンプレート保守」と明示した場合は `template-*` を優先する
+
 ## 1. タスク選択
 
-1. `claude-ext/docs/tasklist.md` を読み込む
+1. 選択したタスクリストを読み込む
 2. 最初の未着手タスク（`- [ ]`）を特定する
 3. 該当タスクがない場合は「全タスク完了済みです」と報告して終了
 
 ## 2. コンテキスト把握
 
-1. `claude-ext/docs/requirements.md` を読み、実装の背景を理解する
+1. 選択した要件ファイルを読み、実装の背景を理解する
 2. 選択したタスクの内容から、実装に必要な情報を整理する
 
 ## 3. ブランチ作成
@@ -33,7 +39,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 
 ## 5. タスクリスト更新
 
-1. `claude-ext/docs/tasklist.md` の該当タスクを `- [x]` に変更する
+1. 選択したタスクリストの該当タスクを `- [x]` に変更する
 
 ## 6. PR作成
 
@@ -46,4 +52,4 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 以下を報告する:
 - 作成したPRのURL
 - 実装した内容の概要
-- `tasklist.md` の次の未着手タスク（あれば）
+- タスクリストの次の未着手タスク（あれば）
