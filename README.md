@@ -138,6 +138,9 @@ Issueテンプレで作成して、タスクを明確化。
 
 ## Optional（AI機能）を有効化する
 
+> **Claude Code を使う場合**: `/setup-repo` を実行すると、以下の手順1〜2（Variables/Secrets設定）を対話的に一括設定できます。
+> Dependency Graph・Branch Protection も同時に適用されます。
+
 ### 1) Repo Variables に `AI_ENABLED=true` を設定
 
 GitHub: Settings → Secrets and variables → Actions → Variables
@@ -177,12 +180,46 @@ Settings → Secrets and variables → Actions → **Variables** で以下を追
 </details>
 
 <details>
+<summary>例: Groq に切り替える場合</summary>
+
+| 種別 | 名前 | 値 |
+|------|------|-----|
+| Secret | `LLM_API_KEY` | Groq APIキー（https://console.groq.com/keys で取得） |
+| Variable | `LLM_API_BASE` | `https://api.groq.com/openai/v1` |
+| Variable | `LLM_MODEL` | `llama-3.3-70b-versatile` |
+
+Groq は OpenAI互換APIを提供しているため、上記の設定だけで動作します。
+
+</details>
+
+<details>
 <summary>旧バージョン（OPENAI_API_KEY）からの移行</summary>
 
 1. Secret `OPENAI_API_KEY` を削除
 2. Secret `LLM_API_KEY` を追加（OpenAI のキーをそのまま設定可）
 3. Variable `LLM_API_BASE` に `https://api.openai.com/v1` を設定
 4. Variable `LLM_MODEL` に `gpt-4o-mini` を設定
+
+</details>
+
+<details>
+<summary>GitHub UIでの設定手順</summary>
+
+**Secretの設定（APIキー等の機密情報）**:
+
+1. GitHubリポジトリページ → **Settings** タブ
+2. 左メニュー **Secrets and variables** → **Actions**
+3. **Secrets** タブ → **New repository secret**
+4. Name に `LLM_API_KEY`、Secret にAPIキーを入力 → **Add secret**
+
+**Variableの設定（APIベースURL・モデル名等）**:
+
+1. GitHubリポジトリページ → **Settings** タブ
+2. 左メニュー **Secrets and variables** → **Actions**
+3. **Variables** タブ → **New repository variable**
+4. Name と Value を入力 → **Add variable**
+
+> **SecretとVariableの違い**: Secretは暗号化されログに表示されません（APIキー向き）。Variableはワークフローログに表示されます（URL・モデル名向き）。
 
 </details>
 
@@ -239,6 +276,7 @@ Claude Code を使ってローカル開発を加速するための設定・ス�
 
 | コマンド | 説明 |
 |---------|------|
+| `/setup-repo` | リポジトリ初期設定（Dependency Graph・Branch Protection・Variables）を一括適用 |
 | `/analyze` | リポジトリの実装状況を分析してレポート生成 |
 | `/update-tasks` | 分析結果に基づいてタスクリストを更新 |
 | `/implement-next` | タスクリストから次の未着手タスクを実装しPR作成 |
