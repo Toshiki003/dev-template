@@ -93,6 +93,20 @@ for n in $(seq -w 1 10); do
 done
 ```
 
+### 3) 初期設定（初回のみ）
+
+テンプレートから作成した直後は、以下の初期設定を行ってください。
+
+```bash
+# Dependency Graph / Vulnerability Alerts の有効化
+gh api "repos/OWNER/REPO/vulnerability-alerts" -X PUT
+
+# または Claude Code で一括設定
+# /setup-repo
+```
+
+> 未設定でもPRは作成可能ですが、Dependency Reviewが警告を出します。
+
 ---
 
 ## 日々の開発フロー（基本・AI不問）

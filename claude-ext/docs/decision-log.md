@@ -69,3 +69,17 @@
   - 却下理由: コード量が大幅に増え、新プロバイダー追加のたびにワークフロー修正が必要
 - **OPENAI_API_KEYへのフォールバック維持**: 旧Secret名との後方互換を残す
   - 却下理由: テンプレートリポジトリのため既存リポジトリへの直接影響なし。設定の複雑化を避ける
+
+### 2026-02-28: dependency-review.yml に continue-on-error を追加
+
+**決定**: `dependency-review.yml` に `continue-on-error: true` を追加し、失敗時に警告メッセージで設定手順を案内するステップを追加する。READMEにも初期設定セクションを追加。
+
+**理由**:
+- テンプレートから新規作成した直後、Dependency Graphが未有効のため `Error: Forbidden` でPRがブロックされていた
+- GitHubの仕様上、リポジトリ設定（Dependency Graph等）はテンプレートから継承されない
+- 非機能要件「テンプレートから新規作成したリポジトリで、追加セットアップなしに基本フローが成立する」への対応
+- 既存ワークフロー（`pr-summary.yml`/`codex-review-comment.yml`）の条件分岐パターンと一貫したアプローチ
+
+**代替案**:
+- **Branch Protectionのrequired checkから外す**: Dependency Reviewを必須チェックから除外する
+  - 却下理由: Dependency Graph有効化後もレビューが任意扱いとなり、依存変更の安全性チェックが漏れるリスクがある
