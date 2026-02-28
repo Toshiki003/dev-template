@@ -43,14 +43,14 @@
 - [x] GitHub Actions バージョンを v6 に引き上げ
 - [x] `dependency-review.yml` に `continue-on-error` + 初期設定ガイダンス追加
 - [x] Claude Code スキル定義（`/analyze`, `/update-tasks`, `/implement-next`, `/fix-review`, `/setup-repo`, `/create-requirements`）
-- [ ] `pr.sh` のブランチプレフィックスをタイトルプレフィックスから動的生成（現在 `feat/` 固定）
+- [x] `pr.sh` のブランチプレフィックスをタイトルプレフィックスから動的生成（現在 `feat/` 固定）
 - [ ] README内のCodeQL例示のactionsバージョン整合（`@v4` → `@v6`）
 
 ---
 
 ## 次に着手するタスク
 
-- [ ] `pr.sh` のブランチプレフィックスをタイトルプレフィックスから動的生成
+- [ ] README内のCodeQL例示のactionsバージョン整合（`@v4` → `@v6`）
 
 ---
 

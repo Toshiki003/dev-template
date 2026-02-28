@@ -3,7 +3,8 @@ set -euo pipefail
 
 TITLE="${1:-}"
 if [ -z "$TITLE" ]; then
-  echo "Usage: ./scripts/pr.sh \"feat: ...\""
+  echo "Usage: ./scripts/pr.sh \"<type>: ...\""
+  echo "Types: feat / fix / docs / refactor / test / chore / ci / build / perf / hotfix"
   exit 1
 fi
 
@@ -24,9 +25,24 @@ fi
 git checkout "$default_branch"
 git pull --rebase
 
-# Create feature branch name
+# Detect branch prefix from title (fallback: feat)
+prefix="feat"
+case "$TITLE" in
+  feat:*|feat\(*)           prefix="feat" ;;
+  fix:*|fix\(*)             prefix="fix" ;;
+  docs:*|docs\(*)           prefix="docs" ;;
+  refactor:*|refactor\(*)   prefix="refactor" ;;
+  test:*|test\(*)           prefix="test" ;;
+  chore:*|chore\(*)         prefix="chore" ;;
+  ci:*|ci\(*)               prefix="ci" ;;
+  build:*|build\(*)         prefix="build" ;;
+  perf:*|perf\(*)           prefix="perf" ;;
+  hotfix:*|hotfix\(*)       prefix="hotfix" ;;
+esac
+
+# Create branch name
 slug=$(echo "$TITLE" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g' | sed -E 's/^-|-$//g')
-branch="feat/${slug}-$(date +%Y%m%d%H%M%S)"
+branch="${prefix}/${slug}-$(date +%Y%m%d%H%M%S)"
 git checkout -b "$branch"
 
 echo "Now implement your changes, then run:"
