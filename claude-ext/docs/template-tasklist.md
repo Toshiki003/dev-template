@@ -36,14 +36,22 @@
 - [x] テンプレート要件を `template-requirements.md` として独立管理
 - [x] 互換ポインタ（`requirements.md` / `tasklist.md`）を整備
 - [x] `claude-ext/README.md` の説明を実体ファイルへ同期
-- [ ] 仕様変更時のドキュメント同時更新チェック（README / SECURITY / decision-log）の運用ルールをCI化
+- [x] 仕様変更時のドキュメント同時更新チェック（README / SECURITY / decision-log）の運用ルールをCI化
+
+## フェーズ 5: CI・スクリプト改善
+
+- [x] GitHub Actions バージョンを v6 に引き上げ
+- [x] `dependency-review.yml` に `continue-on-error` + 初期設定ガイダンス追加
+- [x] Claude Code スキル定義（`/analyze`, `/update-tasks`, `/implement-next`, `/fix-review`, `/setup-repo`, `/create-requirements`）
+- [ ] `pr.sh` のブランチプレフィックスをタイトルプレフィックスから動的生成（現在 `feat/` 固定）
+- [ ] README内のCodeQL例示のactionsバージョン整合（`@v4` → `@v6`）
 
 ---
 
 ## 次に着手するタスク
 
-- [ ] 文書同期チェック（README / CLAUDE / docs）をCIで自動検証する
+- [ ] `pr.sh` のブランチプレフィックスをタイトルプレフィックスから動的生成
 
 ---
 
-**最終更新**: 2026-02-24
+**最終更新**: 2026-03-01
