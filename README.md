@@ -163,13 +163,13 @@ GitHub: Settings → Secrets and variables → Actions → Variables
 
 ### 2) PRサマリ生成を使いたい場合（任意）
 
-デフォルトでは **Gemini（gemini-2.5-flash）** を使用します。
+デフォルトでは **Groq（groq/compound）** を使用します。
 
-**最小構成（Gemini）**: Secret に `LLM_API_KEY` を設定するだけでOK。
+**最小構成（Groq）**: Secret に `LLM_API_KEY` を設定するだけでOK。
 
 GitHub: Settings → Secrets and variables → Actions → **Secrets**
 
-- `LLM_API_KEY` — Google AI Studio の APIキー
+- `LLM_API_KEY` — Groq の APIキー（https://console.groq.com/keys で取得）
 
 > APIキーは **リポジトリにコミットしません**。Secretsに保存します。
 
@@ -179,8 +179,8 @@ Settings → Secrets and variables → Actions → **Variables** で以下を追
 
 | Variable名 | 説明 | デフォルト値（未設定時） |
 |------------|------|------------------------|
-| `LLM_API_BASE` | APIベースURL | `https://generativelanguage.googleapis.com/v1beta/openai` |
-| `LLM_MODEL` | モデル名 | `gemini-2.5-flash` |
+| `LLM_API_BASE` | APIベースURL | `https://api.groq.com/openai/v1` |
+| `LLM_MODEL` | モデル名 | `groq/compound` |
 
 <details>
 <summary>例: OpenAI に切り替える場合</summary>
@@ -194,15 +194,15 @@ Settings → Secrets and variables → Actions → **Variables** で以下を追
 </details>
 
 <details>
-<summary>例: Groq に切り替える場合</summary>
+<summary>例: Gemini に切り替える場合</summary>
 
 | 種別 | 名前 | 値 |
 |------|------|-----|
-| Secret | `LLM_API_KEY` | Groq APIキー（https://console.groq.com/keys で取得） |
-| Variable | `LLM_API_BASE` | `https://api.groq.com/openai/v1` |
-| Variable | `LLM_MODEL` | `llama-3.3-70b-versatile` |
+| Secret | `LLM_API_KEY` | Google AI Studio の APIキー |
+| Variable | `LLM_API_BASE` | `https://generativelanguage.googleapis.com/v1beta/openai` |
+| Variable | `LLM_MODEL` | `gemini-2.5-flash` |
 
-Groq は OpenAI互換APIを提供しているため、上記の設定だけで動作します。
+Gemini は OpenAI互換エンドポイントを提供しているため、上記の設定だけで動作します。
 
 </details>
 

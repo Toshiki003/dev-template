@@ -58,8 +58,8 @@ gh variable set LLM_MODEL --body "groq/compound"
 | Variable名 | 必須 | デフォルト値（ワークフロー側） | 用途 |
 |------------|------|--------------------------|------|
 | `AI_ENABLED` | Yes | _(未設定=OFF)_ | AI機能の有効化フラグ |
-| `LLM_API_BASE` | No | `https://generativelanguage.googleapis.com/v1beta/openai` | LLM APIのベースURL |
-| `LLM_MODEL` | No | `gemini-2.5-flash` | 使用するLLMモデル |
+| `LLM_API_BASE` | No | `https://api.groq.com/openai/v1` | LLM APIのベースURL |
+| `LLM_MODEL` | No | `groq/compound` | 使用するLLMモデル |
 
 ### Secrets の設定（WebUIから手動）
 
