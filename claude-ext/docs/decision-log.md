@@ -56,13 +56,13 @@
 
 ### 2026-02-24: PRサマリ生成のLLMプロバイダー切り替え対応
 
-**決定**: OpenAI互換エンドポイント方式を採用し、APIベースURL・モデル名・APIキーの3つをGitHub Variables/Secretsで切り替え可能にする。デフォルトはGemini（gemini-2.5-flash）。
+**決定**: OpenAI互換エンドポイント方式を採用し、APIベースURL・モデル名・APIキーの3つをGitHub Variables/Secretsで切り替え可能にする。デフォルトはGroq（groq/compound）。
 
 **理由**:
-- GeminiがOpenAI互換エンドポイント（`/v1beta/openai/chat/completions`）を提供しているため、既存のリクエスト形式をほぼそのまま流用できる
+- GroqがOpenAI互換エンドポイント（`/openai/v1/chat/completions`）を提供しているため、既存のリクエスト形式をほぼそのまま流用できる
 - 変更箇所が最小限（ベースURL・モデル名・Secret名の3点のみ）
-- `vars.XXX || 'デフォルト値'` パターンにより、Gemini利用時は `LLM_API_KEY` のSecret設定のみで動作する
-- OpenAI/Anthropic等への切り替えもVariableの変更だけで対応可能
+- `vars.XXX || 'デフォルト値'` パターンにより、Groq利用時は `LLM_API_KEY` のSecret設定のみで動作する
+- OpenAI/Gemini等への切り替えもVariableの変更だけで対応可能
 
 **代替案**:
 - **プロバイダーごとに分岐するswitch方式**: 各プロバイダー固有のSDK/APIフォーマットを個別実装

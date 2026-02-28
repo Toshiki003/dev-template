@@ -31,8 +31,8 @@ jobs:
       - name: Generate summary with LLM API
         uses: actions/github-script@v8
         env:
-          LLM_API_BASE: ${{ vars.LLM_API_BASE || 'https://generativelanguage.googleapis.com/v1beta/openai' }}
-          LLM_MODEL: ${{ vars.LLM_MODEL || 'gemini-2.5-flash' }}
+          LLM_API_BASE: ${{ vars.LLM_API_BASE || 'https://api.groq.com/openai/v1' }}
+          LLM_MODEL: ${{ vars.LLM_MODEL || 'groq/compound' }}
           PR_DIFF: ${{ steps.diff.outputs.diff }}
           PR_TITLE: ${{ github.event.pull_request.title }}
         with:
