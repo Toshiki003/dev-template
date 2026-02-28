@@ -36,7 +36,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.5'
       - name: Install dependencies
         run: |
           if [ -f composer.json ]; then composer install --no-interaction --prefer-dist; fi
@@ -52,7 +52,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-go@v6
         with:
-          go-version: '1.22'
+          go-version: '1.26'
       - name: Test
         run: |
           go test ./... -count=1
@@ -65,7 +65,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
         with:
-          python-version: '3.12'
+          python-version: '3.14'
       - name: Install dependencies
         run: |
           python -m pip install -U pip
