@@ -11,6 +11,81 @@
 
 ---
 
+## リポジトリ初期設定（初回のみ）
+
+新規リポジトリを作成した直後に、以下の初期設定を行います。
+
+> Claude Code が利用可能な場合は `/setup-repo` で一括設定できます。
+
+### Dependency Graph / Vulnerability Alerts の有効化
+
+```bash
+OWNER_REPO=$(gh repo view --json nameWithOwner -q .nameWithOwner)
+gh api "repos/${OWNER_REPO}/vulnerability-alerts" -X PUT
+```
+
+### デフォルトブランチの保護設定
+
+```bash
+DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef -q .defaultBranchRef.name)
+gh api "repos/${OWNER_REPO}/branches/${DEFAULT_BRANCH}/protection" -X PUT \
+  -H "Accept: application/vnd.github+json" \
+  --input - <<'EOF'
+{
+  "required_pull_request_reviews": { "required_approving_review_count": 0 },
+  "required_status_checks": null,
+  "enforce_admins": false,
+  "restrictions": null,
+  "allow_force_pushes": false,
+  "allow_deletions": false
+}
+EOF
+```
+
+### GitHub Variables の設定
+
+AI機能を有効化する場合に設定します。
+
+```bash
+# AI機能の有効化（必須）
+gh variable set AI_ENABLED --body "true"
+
+# LLM APIの設定（任意 - 未設定時はワークフローのデフォルト値が使用される）
+gh variable set LLM_API_BASE --body "https://api.groq.com/openai/v1"
+gh variable set LLM_MODEL --body "groq/compound"
+```
+
+| Variable名 | 必須 | デフォルト値（ワークフロー側） | 用途 |
+|------------|------|--------------------------|------|
+| `AI_ENABLED` | Yes | _(未設定=OFF)_ | AI機能の有効化フラグ |
+| `LLM_API_BASE` | No | `https://generativelanguage.googleapis.com/v1beta/openai` | LLM APIのベースURL |
+| `LLM_MODEL` | No | `gemini-2.5-flash` | 使用するLLMモデル |
+
+### Secrets の設定（WebUIから手動）
+
+Secretsはセキュリティ上の理由からWebUIで設定します。
+
+- **LLM_API_KEY**（必須）: LLM APIの認証キー
+- **GITHUB_TOKEN**: 自動提供のため設定不要
+
+設定ページ: `https://github.com/{owner}/{repo}/settings/secrets/actions`
+
+### 設定の確認
+
+```bash
+# Vulnerability Alerts
+gh api "repos/${OWNER_REPO}/vulnerability-alerts" -X GET
+
+# Branch Protection
+gh api "repos/${OWNER_REPO}/branches/${DEFAULT_BRANCH}/protection"
+
+# Variables / Secrets
+gh variable list
+gh secret list
+```
+
+---
+
 ## 0. 作業対象ドキュメントの選択
 
 - アプリ実装を進める場合: `claude-ext/docs/app-requirements.md` / `claude-ext/docs/app-tasklist.md`

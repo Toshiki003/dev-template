@@ -18,7 +18,10 @@
       "Bash(git pull:*)",
       "Bash(gh pr:*)",
       "Bash(gh repo:*)",
-      "Bash(bash scripts/:*)"
+      "Bash(bash scripts/:*)",
+      "Bash(gh api:*)",
+      "Bash(gh variable:*)",
+      "Bash(gh secret:*)"
     ],
     "deny": [
       "Bash(rm -rf /)**",

@@ -25,6 +25,9 @@
 ### `/fix-review` — レビュー指摘修正
 現在ブランチのPRレビューコメントを取得し、自動修正してプッシュする。
 
+### `/setup-repo` — リポジトリ初期設定
+Dependency Graph・Vulnerability Alertsの有効化、デフォルトブランチの保護設定（PRマージ必須・Force push禁止）、GitHub Variablesの設定を一括適用する。
+
 ### その他のスキル
 - `/analyze` — リポジトリの実装状況を分析してレポート生成
 - `/update-tasks` — 最新レポートに基づいてタスクリスト更新（デフォルト: `app-tasklist.md`）
