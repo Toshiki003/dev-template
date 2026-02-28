@@ -80,8 +80,8 @@ jobs:
               provider = 'Gemini';
             } else if (apiBase.includes('api.openai.com')) {
               provider = 'OpenAI';
-            } else if (apiBase.includes('api.anthropic.com')) {
-              provider = 'Anthropic';
+            } else if (apiBase.includes('api.groq.com')) {
+              provider = 'Groq';
             }
 
             const summary = data?.choices?.[0]?.message?.content;
