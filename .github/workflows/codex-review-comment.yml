@@ -13,7 +13,7 @@ jobs:
     if: ${{ vars.AI_ENABLED == 'true' }}
     steps:
       - name: Comment @codex review when labeled "ai-review"
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const label = context.payload.label?.name;
