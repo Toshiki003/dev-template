@@ -28,10 +28,11 @@ jobs:
               }
             } else if (action === "synchronize") {
               // synchronize イベント: PRに ai-review ラベルが付いているか確認
-              const { data: labels } = await github.rest.issues.listLabelsOnIssue({
+              const labels = await github.paginate(github.rest.issues.listLabelsOnIssue, {
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
+                per_page: 100,
               });
               if (!labels.some(l => l.name === "ai-review")) {
                 core.info("ai-review label not present. Skipping.");
