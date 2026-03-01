@@ -2,7 +2,7 @@ name: Codex Review & Summary (Optional)
 
 on:
   pull_request:
-    types: [labeled]
+    types: [labeled, synchronize]
 
 permissions:
   pull-requests: write
@@ -12,15 +12,32 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ vars.AI_ENABLED == 'true' }}
     steps:
-      - name: Comment @codex review when labeled "ai-review"
+      - name: Comment @codex review when ai-review label is present
         uses: actions/github-script@v8
         with:
           script: |
-            const label = context.payload.label?.name;
-            if (label !== "ai-review") {
-              core.info(`Label "${label}" is not ai-review. Skipping.`);
-              return;
+            const action = context.payload.action;
+
+            if (action === "labeled") {
+              // labeled イベント: 付与されたラベルが ai-review か確認
+              const label = context.payload.label?.name;
+              if (label !== "ai-review") {
+                core.info(`Label "${label}" is not ai-review. Skipping.`);
+                return;
+              }
+            } else if (action === "synchronize") {
+              // synchronize イベント: PRに ai-review ラベルが付いているか確認
+              const { data: labels } = await github.rest.issues.listLabelsOnIssue({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+              });
+              if (!labels.some(l => l.name === "ai-review")) {
+                core.info("ai-review label not present. Skipping.");
+                return;
+              }
             }
+
             const body = [
               "@codex review",
               "",
