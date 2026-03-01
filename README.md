@@ -24,8 +24,7 @@ PR駆動開発を「毎回同じ品質」で回すための **テンプレート
 
 ### Optional（必要な時だけ、DEFAULT OFF）
 
-- PR変更点サマリ生成（Codex Action など）
-- Codex レビュー依頼コメント（ラベル駆動：`ai-review`）
+- PR変更点サマリ＋レビュー（Codex — ラベル駆動：`ai-review`）
 
 > **重要**: Optional機能は、設定しなければ「自動でスキップ」されます。  
 > つまり Claude/Codex の契約を終了しても、テンプレのフロー自体は壊れません。
@@ -47,8 +46,7 @@ dev-template/
     workflows/
       ci.yml
       dependency-review.yml
-      pr-summary.yml           # Optional
-      codex-review-comment.yml # Optional
+      codex-review-comment.yml # Optional（サマリ＋レビュー）
   .claude/                     # Claude Code 設定・スキル（Optional）
     CLAUDE.md
     rules/
@@ -152,7 +150,7 @@ Issueテンプレで作成して、タスクを明確化。
 
 ## Optional（AI機能）を有効化する
 
-> **Claude Code を使う場合**: `/setup-repo` を実行すると、以下の手順1〜2（Variables/Secrets設定）を対話的に一括設定できます。
+> **Claude Code を使う場合**: `/setup-repo` を実行すると、以下の手順1を対話的に設定できます。
 > Dependency Graph・Branch Protection も同時に適用されます。
 
 ### 1) Repo Variables に `AI_ENABLED=true` を設定
@@ -161,107 +159,24 @@ GitHub: Settings → Secrets and variables → Actions → Variables
 
 - `AI_ENABLED=true`
 
-### 2) PRサマリ生成を使いたい場合（任意）
+### 2) Codexレビュー＋サマリ（ラベル駆動）
 
-デフォルトでは **Groq（groq/compound）** を使用します。
+PRにラベル `ai-review` を付けると、`@codex review` コメントが自動で付きます。
+Codex GitHub連携が有効な場合、PR変更内容の要約とコードレビューが返ります。
 
-**最小構成（Groq）**: Secret に `LLM_API_KEY` を設定するだけでOK。
-
-GitHub: Settings → Secrets and variables → Actions → **Secrets**
-
-- `LLM_API_KEY` — Groq の APIキー（https://console.groq.com/keys で取得）
-
-> APIキーは **リポジトリにコミットしません**。Secretsに保存します。
-
-**別のLLMプロバイダーに切り替えたい場合**:
-
-Settings → Secrets and variables → Actions → **Variables** で以下を追加します。
-
-| Variable名 | 説明 | デフォルト値（未設定時） |
-|------------|------|------------------------|
-| `LLM_API_BASE` | APIベースURL | `https://api.groq.com/openai/v1` |
-| `LLM_MODEL` | モデル名 | `groq/compound` |
-
-<details>
-<summary>例: OpenAI に切り替える場合</summary>
-
-| 種別 | 名前 | 値 |
-|------|------|-----|
-| Secret | `LLM_API_KEY` | OpenAI APIキー |
-| Variable | `LLM_API_BASE` | `https://api.openai.com/v1` |
-| Variable | `LLM_MODEL` | `gpt-4o-mini` |
-
-</details>
-
-<details>
-<summary>例: Gemini に切り替える場合</summary>
-
-| 種別 | 名前 | 値 |
-|------|------|-----|
-| Secret | `LLM_API_KEY` | Google AI Studio の APIキー |
-| Variable | `LLM_API_BASE` | `https://generativelanguage.googleapis.com/v1beta/openai` |
-| Variable | `LLM_MODEL` | `gemini-2.5-flash` |
-
-Gemini は OpenAI互換エンドポイントを提供しているため、上記の設定だけで動作します。
-
-</details>
-
-<details>
-<summary>旧バージョン（OPENAI_API_KEY）からの移行</summary>
-
-1. Secret `OPENAI_API_KEY` を削除
-2. Secret `LLM_API_KEY` を追加（OpenAI のキーをそのまま設定可）
-3. Variable `LLM_API_BASE` に `https://api.openai.com/v1` を設定
-4. Variable `LLM_MODEL` に `gpt-4o-mini` を設定
-
-</details>
-
-<details>
-<summary>GitHub UIでの設定手順</summary>
-
-**Secretの設定（APIキー等の機密情報）**:
-
-1. GitHubリポジトリページ → **Settings** タブ
-2. 左メニュー **Secrets and variables** → **Actions**
-3. **Secrets** タブ → **New repository secret**
-4. Name に `LLM_API_KEY`、Secret にAPIキーを入力 → **Add secret**
-
-**Variableの設定（APIベースURL・モデル名等）**:
-
-1. GitHubリポジトリページ → **Settings** タブ
-2. 左メニュー **Secrets and variables** → **Actions**
-3. **Variables** タブ → **New repository variable**
-4. Name と Value を入力 → **Add variable**
-
-> **SecretとVariableの違い**: Secretは暗号化されログに表示されません（APIキー向き）。Variableはワークフローログに表示されます（URL・モデル名向き）。
-
-</details>
+> `pr-finish.sh` が全PRに `ai-review` ラベルを自動付与するため、手動でのラベル付与は不要です。
 
 ### 3) LLM外部送信ポリシー（必読）
 
-PRサマリ機能（`.github/workflows/pr-summary.yml`）は、外部LLM APIに以下を送信します。
-
-- PRタイトル
-- `git diff origin/<base>...HEAD` の先頭10,000 bytes（`*.lock` と `package-lock.json` は除外）
-
-以下を含む可能性があるPRでは、PRサマリ機能を有効化しないでください。
-
-- APIキー、トークン、認証情報
-- 個人情報、顧客データ、契約上の秘匿情報
-- 未公開の脆弱性情報、インシデント情報
+このテンプレートは外部LLM APIへのコード送信を行いません。PRサマリとレビューはGitHub Codexがプラットフォーム内で処理します。
 
 運用ルール:
 
 - デフォルトは `AI_ENABLED` 未設定（OFF）
-- 有効化は、リポジトリ管理者が情報分類と利用規約を確認した場合のみ
-- 機密データを扱う期間・プロジェクトは `AI_ENABLED=false` で運用する
+- 有効化は、リポジトリ管理者がGitHub Codexの利用規約を確認した場合のみ
+- Codexが不要な期間・プロジェクトは `AI_ENABLED=false` で運用する
 
 詳細は `SECURITY.md` を参照してください。
-
-### 4) Codexレビュー依頼（ラベル駆動）
-
-PRにラベル `ai-review` を付けると、`@codex review` コメントが自動で付きます。
-（Codex GitHub連携が有効な場合、レビューが返ります）
 
 ---
 

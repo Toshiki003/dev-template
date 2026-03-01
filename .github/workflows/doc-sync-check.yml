@@ -28,7 +28,7 @@ jobs:
       - name: Required workflows exist
         run: |
           missing=()
-          for f in ci.yml dependency-review.yml pr-summary.yml codex-review-comment.yml; do
+          for f in ci.yml dependency-review.yml codex-review-comment.yml; do
             if [ ! -f ".github/workflows/$f" ]; then
               missing+=("$f")
             fi
@@ -68,7 +68,6 @@ jobs:
             ".github/dependabot.yml"
             ".github/workflows/ci.yml"
             ".github/workflows/dependency-review.yml"
-            ".github/workflows/pr-summary.yml"
             ".github/workflows/codex-review-comment.yml"
             "scripts/pr.sh"
             "scripts/pr-finish.sh"

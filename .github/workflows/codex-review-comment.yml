@@ -1,4 +1,4 @@
-name: Codex Review Request (Optional)
+name: Codex Review & Summary (Optional)
 
 on:
   pull_request:
@@ -21,7 +21,15 @@ jobs:
               core.info(`Label "${label}" is not ai-review. Skipping.`);
               return;
             }
-            const body = "@codex review\n重点: セキュリティ/運用/可観測性/壊れやすい境界条件";
+            const body = [
+              "@codex review",
+              "",
+              "まず「## AI PR Summary」セクションとして、変更内容の要約を日本語で記載してください。",
+              "含める項目: 何が変わったか、なぜ、リスク・影響、テスト方法、セキュリティ考慮事項",
+              "",
+              "その後、以下の重点でレビューしてください:",
+              "セキュリティ / 運用 / 可観測性 / 壊れやすい境界条件"
+            ].join("\n");
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,

@@ -47,11 +47,17 @@
 - [x] `pr.sh` のブランチプレフィックスをタイトルプレフィックスから動的生成（PR #14）
 - [x] README内のCodeQL例示のactionsバージョン整合（`actions/checkout@v4` → `@v6`、`codeql-action` はv4が最新のため維持）
 
+## フェーズ 6: AI機能統合（進行中）
+
+- 🚧 PRサマリ生成をCodexに統合（`pr-summary.yml` 削除、`codex-review-comment.yml` に要約+レビューを統合）
+- 🚧 外部LLM依存の完全排除（`LLM_API_KEY` / `LLM_API_BASE` / `LLM_MODEL` 不要化）
+- 🚧 関連ドキュメント更新（README / SECURITY / manual-workflow / setup-repo SKILL / template-requirements）
+
 ---
 
 ## 次に着手するタスク
 
-全タスク完了済み。
+フェーズ6の完了確認。
 
 ---
 

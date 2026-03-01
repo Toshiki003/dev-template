@@ -15,7 +15,7 @@
 
 - GitHub運用テンプレート（Issue/PR/CI/依存レビュー/Dependabot）
 - ローカル補助スクリプト（`scripts/pr.sh`, `scripts/pr-finish.sh`）
-- OptionalなAI補助（PRサマリ、Codexレビューコメント）
+- OptionalなAI補助（Codexによる要約+レビュー）
 - 運用ドキュメント（README、SECURITY、manual-workflow、本要件、tasklist、decision-log）
 
 ### 1.2 スコープ外
@@ -65,9 +65,9 @@
 | ID | 要件 | 受け入れ条件 |
 |----|------|-------------|
 | FR-020 | AI機能は明示有効化時のみ動作する | `AI_ENABLED=true` のときのみ Optional ワークフローが実行される |
-| FR-021 | PRサマリを外部LLMで生成できる | `.github/workflows/pr-summary.yml` がPRタイトル+差分（最大10,000 bytes、lockfile除外）を送信し、コメントを作成/更新する |
-| FR-022 | Codexレビュー依頼コメントを自動化する | `.github/workflows/codex-review-comment.yml` が `ai-review` ラベルで `@codex review` コメントを投稿する |
-| FR-023 | 外部送信ポリシーを文書化する | READMEとSECURITYにLLM外部送信ポリシーが明記されている |
+| FR-021 | PRサマリ+レビューをCodexで実行する | `codex-review-comment.yml` が `ai-review` ラベルで `@codex review` コメントを投稿し、要約+レビューを依頼する |
+| FR-022 | (FR-021に統合) | — |
+| FR-023 | 外部送信ポリシーを文書化する | READMEとSECURITYにLLM外部送信ポリシー（Codex前提: 外部LLM APIへの送信なし）が明記されている |
 
 ### 3.4 Claude運用ドキュメント
 
@@ -85,7 +85,7 @@
 | 安全性 | `pr-finish.sh` は保護ブランチを拒否し、PR作成失敗を隠蔽しない |
 | 再現性 | テンプレートから新規作成したリポジトリで、追加セットアップなしに基本フローが成立する |
 | 可搬性 | Bash + GitHub Actions + `gh` CLI が利用できる環境で動作する |
-| セキュリティ | APIキーはSecrets管理を前提とし、LLM外部送信ポリシーをREADME/SECURITYで明示する |
+| セキュリティ | LLM外部送信ポリシーをREADME/SECURITYで明示する（外部LLM API不使用、Codex利用） |
 | 保守性 | 仕様変更時は `decision-log.md` と関連ドキュメントを同一PRで更新する |
 
 ---
@@ -105,7 +105,7 @@
 ## 6. 検証チェックリスト
 
 - [ ] `bash -n scripts/pr.sh scripts/pr-finish.sh` が成功する
-- [ ] `.github/workflows/` の主要ワークフローが存在する（CI / dependency-review / optional 2種）
+- [ ] `.github/workflows/` の主要ワークフローが存在する（CI / dependency-review / optional 1種）
 - [ ] READMEの手順と実ファイル構成に齟齬がない
 - [ ] LLM外部送信ポリシーが README と SECURITY の両方で確認できる
 

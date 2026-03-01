@@ -47,28 +47,15 @@ EOF
 AI機能を有効化する場合に設定します。
 
 ```bash
-# AI機能の有効化（必須）
+# AI機能の有効化
 gh variable set AI_ENABLED --body "true"
-
-# LLM APIの設定（任意 - 未設定時はワークフローのデフォルト値が使用される）
-gh variable set LLM_API_BASE --body "https://api.groq.com/openai/v1"
-gh variable set LLM_MODEL --body "groq/compound"
 ```
 
-| Variable名 | 必須 | デフォルト値（ワークフロー側） | 用途 |
-|------------|------|--------------------------|------|
-| `AI_ENABLED` | Yes | _(未設定=OFF)_ | AI機能の有効化フラグ |
-| `LLM_API_BASE` | No | `https://api.groq.com/openai/v1` | LLM APIのベースURL |
-| `LLM_MODEL` | No | `groq/compound` | 使用するLLMモデル |
+| Variable名 | 必須 | デフォルト値 | 用途 |
+|------------|------|------------|------|
+| `AI_ENABLED` | Yes | _(未設定=OFF)_ | AI機能（Codexサマリ＋レビュー）の有効化フラグ |
 
-### Secrets の設定（WebUIから手動）
-
-Secretsはセキュリティ上の理由からWebUIで設定します。
-
-- **LLM_API_KEY**（必須）: LLM APIの認証キー
-- **GITHUB_TOKEN**: 自動提供のため設定不要
-
-設定ページ: `https://github.com/{owner}/{repo}/settings/secrets/actions`
+> Secretsの手動設定は不要です。`GITHUB_TOKEN` は自動提供されます。
 
 ### 設定の確認
 
@@ -183,7 +170,7 @@ gh pr merge --squash
 | シナリオ | 影響 | 代替手段 |
 |---------|------|---------|
 | Claude Code解約 | `/implement-next`、`/fix-review` 使用不可 | 本手順書のスクリプトで手動PR作成 |
-| Codex解約 | PRサマリー・AIレビューなし | CI/dependency-reviewは継続動作。PRテンプレートで手動サマリー |
+| Codex解約 | PRサマリー・AIレビュー両方停止 | CI/dependency-reviewは継続動作。PRテンプレートで手動サマリー |
 | 両方解約 | AI機能すべて停止 | Issueテンプレート、PRテンプレート、CI、dependency-reviewは動作 |
 
 > CodeQL は任意導入です。導入済みの場合のみ継続動作します。

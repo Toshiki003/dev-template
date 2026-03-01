@@ -64,35 +64,13 @@ gh variable list
 
 | Variable名 | 必須 | デフォルト値 | 用途 |
 |------------|------|------------|------|
-| `AI_ENABLED` | Yes | - | AI機能（PR要約・Codexレビュー）の有効化フラグ |
-| `LLM_API_BASE` | No | `https://api.groq.com/openai/v1` | LLM APIのベースURL |
-| `LLM_MODEL` | No | `groq/compound` | 使用するLLMモデル |
+| `AI_ENABLED` | Yes | - | AI機能（Codexサマリ＋レビュー）の有効化フラグ |
 
 設定手順:
 1. `gh variable list` で既存の設定を確認する
 2. `AI_ENABLED` が未設定の場合、`true` を推奨としてユーザーに値を確認し、`gh variable set AI_ENABLED --body "<値>"` で設定する
-3. `LLM_API_BASE` が未設定の場合、デフォルト値 `https://api.groq.com/openai/v1` を提示し、変更したい場合のみユーザーに値を確認して `gh variable set LLM_API_BASE --body "<値>"` で設定する
-4. `LLM_MODEL` が未設定の場合、デフォルト値 `groq/compound` を提示し、変更したい場合のみユーザーに値を確認して `gh variable set LLM_MODEL --body "<値>"` で設定する
 
-### 5. Secrets の手動設定ガイド
-
-Secretsはセキュリティ上の理由からCLIでの設定を行わず、WebUIでの手動設定を案内する。
-
-`{owner}` / `{repo}` は手順1で取得した値を使用する。
-
-以下のメッセージをユーザーに表示する:
-
-```
-⚠️ 以下のSecretはGitHub WebUIから手動で設定してください:
-
-  - LLM_API_KEY（必須）: LLM APIの認証キー
-
-  設定ページ: https://github.com/{owner}/{repo}/settings/secrets/actions
-
-  ※ GITHUB_TOKEN は自動提供されるため設定不要です。
-```
-
-### 6. 設定結果の確認・レポート
+### 5. 設定結果の確認・レポート
 
 適用後、以下を実行して結果を確認する:
 
@@ -105,9 +83,6 @@ gh api repos/{owner}/{repo}/branches/{default_branch}/protection
 
 # Variables の設定確認
 gh variable list
-
-# Secrets の設定確認（値は表示されない）
-gh secret list
 ```
 
 最終的に、適用した設定の一覧をユーザーに表示する:
@@ -119,8 +94,5 @@ gh secret list
 | Branch Protection: Force push 禁止 | 有効 / 失敗 |
 | Branch Protection: ブランチ削除禁止 | 有効 / 失敗 |
 | Variable: AI_ENABLED | 設定済み(値) / 未設定 |
-| Variable: LLM_API_BASE | 設定済み(値) / 未設定(デフォルト使用) |
-| Variable: LLM_MODEL | 設定済み(値) / 未設定(デフォルト使用) |
-| Secret: LLM_API_KEY | 設定済み / 未設定(要手動設定) |
 
 **注意**: エラーが発生した場合は、エラー内容とともに手動での設定手順を案内してください。
