@@ -29,7 +29,7 @@ jobs:
           echo "DIFF_EOF" >> "$GITHUB_OUTPUT"
 
       - name: Generate summary with LLM API
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           LLM_API_BASE: ${{ vars.LLM_API_BASE || 'https://api.groq.com/openai/v1' }}
           LLM_MODEL: ${{ vars.LLM_MODEL || 'groq/compound' }}
